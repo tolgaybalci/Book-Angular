@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <p-button label="Kitapları Göster" styleClass="ui-button-info" (click)="stateKitapEkleme = false"></p-button>
+    </div>
+    <div class="col">
+      <p-button label="Yeni Kitap Ekle" styleClass="ui-button-info" (click)="stateKitapEkleme = true; submitButtonText = 'Kitap Ekle';" ></p-button>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<div class="container-fluid" *ngIf="stateKitapEkleme === false">
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Kitap İsmi</th>
+    <th scope="col">Kitap Yazarı</th>
+    <th scope="col">Basim Yeri</th>
+    <th scope="col">Editör</th>
+    <th scope="col">Kitap Türü</th>
+    <th scope="col">Fiyat</th>
+    <th scope="col">Baskı Sayısı</th>
+    <th scope="col">Etiket Numarası</th>
+    <th scope="col">Baskı Türü</th>
+    <th scope="col">Açıklama</th>
+    <th scope="col">Önsöz</th>
+    <th scope="col">Yazarın Biyografisi</th>
+    <th scope="col">ISBN Numarası</th>
+    <th scope="col">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let k of kitaplar">
+    <td>{{k.kitapIsmi}}</td>
+    <td>{{k.kitapYazari}}</td>
+    <td>{{k.basimYeri}}</td>
+    <td>{{k.editor}}</td>
+    <td>{{k.kitapTuru.label}}</td>
+    <td>{{k.fiyat}}</td>
+    <td>{{k.baskiSayisi}}</td>
+    <td>{{k.etiketNumarasi}}</td>
+    <td>{{k.baskiTuru.label}}</td>
+     <td>{{k.aciklama}}</td>
+    <td>{{k.onsoz}}</td>
+    <td>{{k.yazarinBiyografisi}}</td>
+    <td>{{k.isbn_Numarasi}}</td>
+    <td>
+      <div class="d-flex flex-row bd-highlight mb-3">
+          <div class="p-2"><button class="form-delete" (click)="onDelete(k.id)"><i class="pi pi-trash"></i></button></div>
+          <div class="p-2"><p-button icon="pi pi-search" (click)="onDisplay(k.id)"></p-button></div>
+          <div class="p-2"><p-button icon="pi pi-cloud-upload" (click)="onUpload(k.id)"></p-button></div>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="container" *ngIf="stateKitapEkleme === true">
+  <form [formGroup]="kitapForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="KitapControlInput1">Kitap İsmi</label>
+      <input type="text" class="form-control" id="KitapControlInput1" placeholder="Kitap İsmi" formControlName="kitapIsmi">
+    </div>
+    <div class="form-group">
+      <label for="KitapYazarControlInput1">Kitap Yazarı</label>
+      <input type="text" class="form-control" id="KitapYazarControlInput1" placeholder="Kitap Yazarı" formControlName="kitapYazari">
+    </div>
+    <div class="form-group">
+      <label for="BasimYeriControlInput1">Basım Yeri</label>
+      <input type="text" class="form-control" id="BasimYeriControlInput1" placeholder="Basım Yeri" formControlName="basimYeri">
+    </div>
+    <div class="form-row">
+      Tarih:<p-calendar [(ngModel)]="date1" formControlName="basimTarihi"></p-calendar>
+    </div>
+    <div class="form-group">
+      <label for="EditorControlInput1">Basım Yeri</label>
+      <input type="text" class="form-control" id="EditorControlInput1" placeholder="Editor" formControlName="editor">
+    </div>
+    <div class="form-row">
+      <div class="col">
+        Kitap Türü: <p-dropdown [options]="kitapTurleri" optionLabel="label" formControlName="kitapTuru"></p-dropdown>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" placeholder="ISBN Numarası" formControlName="isbn_Numarasi">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <input type="text" class="form-control" placeholder="Fiyat" formControlName="fiyat">
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" placeholder="Baskı Sayısı" formControlName="baskiSayisi">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        Baskı Türü: <p-dropdown [options]="baskiTurleri" optionLabel="label" formControlName="baskiTuru"></p-dropdown>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control" placeholder="Etiket Numarasi" formControlName="etiketNumarasi">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="AciklamaControlTextarea1">Açıklama</label>
+      <textarea class="form-control" id="AciklamaControlTextarea1" rows="3" formControlName="aciklama"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="OnsozControlTextarea1">Önsöz</label>
+      <textarea class="form-control" id="OnsozControlTextarea1" rows="3" formControlName="onsoz"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="YazarinBiyografisiControlTextarea1">Yazarin Biyografisi</label>
+      <textarea class="form-control" id="YazarinBiyografisiControlTextarea1" rows="3" formControlName="yazarinBiyografisi"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">{{submitButtonText}}</button>
+  </form>
+</div>
+
+<p-dialog header="Kitap Ayrıntıları" [(visible)]="displayKitap" [style]="{width: '350px', minWidth:'200px'}" resizable="true">
+  <div clas="container-fluid" *ngIf="displayingKitap">
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Kitap İsmi</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.kitapIsmi}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Kitap Yazarı</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.kitapYazari}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Basim Yeri</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.basimYeri}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Editör</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.editor}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Kitap Türü</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.kitapTuru}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Fiyat</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.fiyat}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Baskı Sayısı</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.baskiSayisi}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Etiket Numarası</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.etiketNumarasi}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Baskı Turu</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.baskiTuru}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Açıklama</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.aciklama}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Önsöz</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.onsoz}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>Yazarın Biyografis</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.yazarinBiyografisi}}
+      </div>
+    </div>
+
+    <div class="row kitap-row">
+      <div class="col">
+        <b>ISBN Numarası</b>
+      </div>
+      <div class="col">
+        {{displayingKitap.isbn_Numarasi}}
+      </div>
+    </div>
+
+  </div>
+
+
+</p-dialog>
